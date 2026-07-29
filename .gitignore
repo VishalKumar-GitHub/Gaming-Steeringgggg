@@ -1,0 +1,23 @@
+# Virtual Environment
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VS Code
+.vscode/
+
+# Environment Variables
+.env
+
+# Model Files
+*.h5
+*.pt
+*.pth
+
+# Logs
+*.log
