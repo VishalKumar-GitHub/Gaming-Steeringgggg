@@ -3,6 +3,8 @@
 
 Control racing games using your hands through a webcam. This project uses **MediaPipe** for real-time hand tracking, **OpenCV** for computer vision, and **PyNput** to simulate keyboard inputs.
 
+<img width="1200" height="675" alt="steering_linkedin_standalone" src="https://github.com/user-attachments/assets/f47b783c-88e7-4ab3-826d-eb0cbd67025b" />
+
 ---
 
 ## Demo
