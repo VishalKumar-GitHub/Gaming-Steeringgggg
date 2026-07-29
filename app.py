@@ -5,7 +5,22 @@ import numpy as np
 import math
 import time
 import platform
-from pynput.keyboard import Key, Controller
+from types import SimpleNamespace
+
+try:
+    from pynput.keyboard import Key, Controller
+    _keyboard_init_error = None
+except Exception as keyboard_import_error:
+    _keyboard_init_error = keyboard_import_error
+
+    class Controller:
+        def press(self, _key):
+            return None
+
+        def release(self, _key):
+            return None
+
+    Key = SimpleNamespace(left="left", right="right", up="up", down="down")
 
 DEFAULT_CAMERA_INDEX       = 0
 STEERING_DEADZONE_DEGREES  = 12
@@ -31,6 +46,26 @@ NEUTRAL_COLOR         = (100, 100, 100)
 keyboard   = Controller()
 mp_hands   = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
+
+
+def open_camera(camera_index):
+    system_name = platform.system().lower()
+    backend_candidates = []
+
+    if system_name == "windows":
+        backend_candidates = [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY]
+    elif system_name == "darwin":
+        backend_candidates = [cv2.CAP_AVFOUNDATION, cv2.CAP_ANY]
+    else:
+        backend_candidates = [cv2.CAP_V4L2, cv2.CAP_ANY]
+
+    for backend in backend_candidates:
+        capture = cv2.VideoCapture(camera_index, backend)
+        if capture.isOpened():
+            return capture
+        capture.release()
+
+    return None
 
 
 def is_hand_open(hand_landmarks):
@@ -292,16 +327,17 @@ def render_hand_connection(camera_frame, left_wrist, right_wrist):
 
 
 def main():
-    video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    if _keyboard_init_error is not None:
+        print("[WARN] pynput keyboard backend unavailable; key presses are disabled.")
+        print(f"       Reason: {_keyboard_init_error}")
 
-    if not video_capture.isOpened():
-        print("Cannot open camera")
-        exit()
-    if not video_capture.isOpened():
-        video_capture = cv2.VideoCapture(DEFAULT_CAMERA_INDEX)
-    if not video_capture.isOpened():
+    video_capture = open_camera(DEFAULT_CAMERA_INDEX)
+    if video_capture is None:
         print("[ERROR] Cannot open camera.")
-        print("  -> macOS: System Settings > Privacy & Security > Camera")
+        print("  -> Check webcam permissions and close apps using the camera.")
+        print("  -> Linux: ensure your user can access /dev/video*.")
+        print("  -> macOS: System Settings > Privacy & Security > Camera.")
+        print("  -> Windows: Settings > Privacy > Camera.")
         return
 
     video_capture.set(cv2.CAP_PROP_FRAME_WIDTH,  640)

@@ -1,3 +1,4 @@
+
 # AI Virtual Steering Wheel 🚗
 
 Control racing games using your hands through a webcam. This project uses **MediaPipe** for real-time hand tracking, **OpenCV** for computer vision, and **PyNput** to simulate keyboard inputs.
@@ -41,12 +42,15 @@ Control racing games using your hands through a webcam. This project uses **Medi
 ## Project Structure
 
 ```
-AI-Virtual-Steering-Wheel/
-│
+Gaming-Steeringgggg/
 ├── app.py
+├── canera.py
+├── config.py
+├── logger.py
+├── steering_math.py
+├── hand_landmarker.task
 ├── requirements.txt
-├── README.md
-└── assets/
+└── README.md
 ```
 
 ---
@@ -56,40 +60,63 @@ AI-Virtual-Steering-Wheel/
 ### Clone Repository
 
 ```bash
-git clone https://github.com/your-username/AI-Virtual-Steering-Wheel.git
-cd AI-Virtual-Steering-Wheel
+git clone https://github.com/VishalKumar-GitHub/Gaming-Steeringgggg.git
+cd Gaming-Steeringgggg
 ```
 
-### Create Virtual Environment
+### Windows Quick Start (Recommended)
+
+One-click run:
+
+- Double-click `AUTO_RUN_WINDOWS.bat`
+
+or run from PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run_windows_fast.ps1
+```
+
+Manual commands:
+
+Open PowerShell in the project folder, then run:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.local.txt
+python app.py
+```
+
+Press `Q` to quit.
+
+### macOS / Linux Setup
+
+Create a virtual environment:
 
 ```bash
 python -m venv .venv
 ```
 
-### Activate Virtual Environment
-
-Windows
-
-```bash
-.venv\Scripts\activate
-```
-
-Linux / macOS
+Activate it:
 
 ```bash
 source .venv/bin/activate
 ```
 
+### Linux System Packages (Required for OpenCV)
+
+On Debian/Ubuntu, install these first:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y libgl1 libglib2.0-0
+```
+
 ### Install Dependencies
 
 ```bash
-pip install -r requirements.txt
-```
-
-or
-
-```bash
-pip install opencv-python mediapipe numpy pynput
+pip install -r requirements.local.txt
 ```
 
 ---
@@ -99,6 +126,66 @@ pip install opencv-python mediapipe numpy pynput
 ```bash
 python app.py
 ```
+
+Press `Q` to quit.
+
+---
+
+## Streamlit Cloud Deploy
+
+Use `streamlit_app.py` as the main file in Streamlit Cloud.
+
+The repo includes `packages.txt` so Streamlit installs required system libraries for OpenCV on Linux builders.
+The repo also includes `runtime.txt` to pin Python 3.11 for compatibility.
+
+Dependency files:
+
+- `requirements.txt` -> cloud deploy dependencies (Streamlit only)
+- `requirements.local.txt` -> local controller dependencies (`app.py`)
+
+This deploy target is a cloud-safe demo/status page. The real steering controller in `app.py` must be run locally on your Windows desktop because it needs:
+
+- local webcam access
+- local keyboard injection into your game window
+
+Local run command (Windows):
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run_windows_fast.ps1
+```
+
+---
+
+## Troubleshooting
+
+### Error: `ImportError: libGL.so.1`
+
+Install Linux OpenCV runtime libraries:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y libgl1 libglib2.0-0
+```
+
+### Error: `Cannot open camera`
+
+- Close other apps that may already be using your webcam.
+- Linux: verify camera access and that `/dev/video0` exists.
+- macOS: enable camera permission in System Settings > Privacy & Security > Camera.
+- Windows: enable camera permission in Settings > Privacy > Camera.
+
+### Windows PowerShell: script execution is disabled
+
+If activation fails with a script policy error, run PowerShell as your user and use:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+### Warning: `pynput keyboard backend unavailable`
+
+This means keyboard key injection is disabled in the current environment (common in headless/remote sessions).
+Hand tracking UI can still run, but steering/brake/accelerate key presses will not be sent to games until a desktop session is available.
 
 ---
 
