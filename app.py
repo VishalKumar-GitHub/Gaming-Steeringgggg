@@ -1,5 +1,15 @@
 print("Starting app...")
-import cv2
+try:
+    import cv2
+except ImportError as import_error:
+    error_text = str(import_error)
+    if "libGL.so.1" in error_text:
+        print("[ERROR] OpenCV dependency missing: libGL.so.1")
+        print("[FIX] On Debian/Ubuntu run:")
+        print("      sudo apt-get update && sudo apt-get install -y libgl1 libglib2.0-0")
+        print("[NOTE] For Streamlit Cloud, use streamlit_app.py as the main file.")
+        raise SystemExit(1)
+    raise
 import mediapipe as mp
 import numpy as np
 import math

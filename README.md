@@ -134,8 +134,6 @@ Press `Q` to quit.
 ## Streamlit Cloud Deploy
 
 Use `streamlit_app.py` as the main file in Streamlit Cloud.
-
-The repo includes `packages.txt` so Streamlit installs required system libraries for OpenCV on Linux builders.
 The repo also includes `runtime.txt` to pin Python 3.11 for compatibility.
 
 Dependency files:
