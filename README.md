@@ -293,17 +293,6 @@ The interface displays:
 - MediaPipe
 - NumPy
 - PyNput
-
----
-
-## Author
-
-**Sujal Shah**
-
-B.Tech Computer Engineering (AI/ML)
-
-GitHub: https://github.com/sujalshah593
-
 ---
 
 ## License
